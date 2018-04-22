@@ -49,6 +49,7 @@ client.msgHandler = function(newMsg) {
 	//console.log('new msg:' + JSON.stringify(res) + ' at:' + mainView.activePage.name);
 	newMsg.userId = newMsg.fromUserId;
 	newMsg.type = newMsg.msgType; 
+	newMsg.fromSessionId = newMsg.fromUserId;
 	newMsg.sessionId = newMsg.toSessionId;   
 	var msgSessionType = (newMsg.msgType === MsgType.MSG_TYPE_GROUP_TEXT || newMsg.type === MsgType.MSG_TYPE_GROUP_AUDIO)? SessionType.SESSION_TYPE_GROUP:SessionType.SESSION_TYPE_SINGLE;
 	var msgSessionKey = msgSessionType + '_' + newMsg.toSessionId;    
@@ -274,8 +275,6 @@ function bindSessions(autoRemove){
 }
 
 function loadRecentlySession(){
-
-	
 	if(imDb.sessionList) {
 		bindSessions(false);
 	}else {
@@ -336,7 +335,13 @@ function loadNewMsgToChatMain(newMsg){
 		var data  = newMsg.msgData;
 		playSound(data.slice(4));
 	});
-	client.answerMsg({sessionType:currentSession.sessionType,sessionId:newMsg.toSessionId,msgId:newMsg.msgId},function(state,res){
+
+	sessionId = newMsg.fromUserId;
+	if(newMsg.type == MsgType.MSG_TYPE_GROUP_TEXT || newMsg.type == MsgType.MSG_TYPE_GROUP_AUDIO) {
+		sessionId = newMsg.toSessionId;
+	}
+	
+	client.answerMsg({sessionType:currentSession.sessionType,sessionId:sessionId,msgId:newMsg.msgId},function(state,res){
 		console.log('finish answer:' + JSON.stringify(res));
 	});
 }
@@ -469,7 +474,6 @@ function playSound(soundBuffer) {
 
 function loadMsgForChatMain(msgs,messagesContainer) {
 	var nullUserIds = [];
-//	console.log(msgs);
 	for(var i in msgs) {
 		if(msgs[i].msgId > currentSession.currentMsgId){
 			currentSession.currentMsgId = msgs[i].msgId;
@@ -524,6 +528,8 @@ function loadMsgForChatMain(msgs,messagesContainer) {
 		var data  = msgs[index].msgData;
 		playSound(data.slice(4));
 	});
+
+
 
 	client.answerMsg({sessionType:currentSession.sessionType,sessionId:currentSession.sessionId,msgId:currentSession.currentMsgId},function(state,res){
 		console.log('finish answer:' + JSON.stringify(res));

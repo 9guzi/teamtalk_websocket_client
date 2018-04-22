@@ -1,4 +1,9 @@
 # teamtalk_websocket_client
+
+[在线demo](http://chat.xiaominfc.com/im)
+
+
+
 给teamtalk_websocket_server测试用的前端实现代码
 
 [弱弱的参考https://github.com/xiaominfc/teamtalk_websocket_server编译出websocket_server并运行](https://github.com/xiaominfc/teamtalk_websocket_server)
@@ -35,4 +40,10 @@ location / {
 支持语音的解析以及播放(chrome firefox android等)，但是客户端语音的编码格式需要换成Opus，
 原来的是speex。speex自己的官网上也说用Opus来替代speex，Opus比speex更好。
 客户端的具体替换可以查看我维护的TeamTalk的工程(https://github.com/xiaominfc/TeamTalk)
+```
+
+```
+2018-04-10
+添加心跳包的发送 保活时间更长
+
 ```
